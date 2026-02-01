@@ -15,7 +15,7 @@
       --accent:#ff3b7a;
       --text:#141414;
 
-      --spark: #ff2f77; /* single particle colour base */
+      --spark: #ff2f77; /* particle base */
     }
 
     *{ box-sizing:border-box; }
@@ -30,7 +30,7 @@
       background: radial-gradient(circle at 30% 20%, var(--bg1), var(--bg2), var(--bg3));
     }
 
-    /* Animated background glow (not dull) */
+    /* Animated background glow */
     .bgGlow{
       position:fixed;
       inset:-40%;
@@ -68,7 +68,7 @@
 
     /* Cards */
     .page{
-      width: min(620px, 92vw);
+      width: min(640px, 92vw);
       padding: 38px 30px 42px;
       border-radius: 24px;
       background: rgba(255,255,255,0.88);
@@ -93,6 +93,7 @@
       font-size: 16px;
     }
 
+    /* Buttons */
     .btn-row{
       display:flex;
       justify-content:center;
@@ -110,26 +111,30 @@
       border-radius:999px;
       cursor:pointer;
       box-shadow: 0 12px 26px rgba(0,0,0,0.18);
-      min-width: 150px;
+      min-width: 160px;
       transition: transform 0.12s ease;
       user-select:none;
     }
-    #yesBtn{
+    button:hover{ transform: translateY(-2px) scale(1.02); }
+
+    .primary{
       background: var(--accent);
       color:#fff;
     }
-    #yesBtn:hover{ transform: translateY(-2px) scale(1.02); }
-
-    #noBtn{
+    .dark{
       background:#111;
       color:#fff;
+    }
+
+    /* NO button runs away */
+    #noBtn{
       position:absolute;
       left: 50%;
       top: 0;
       transform: translateX(160px);
     }
 
-    /* Heart balloons layer (behind particles) */
+    /* Heart balloons layer */
     .balloon-layer{
       position: fixed;
       inset: 0;
@@ -154,8 +159,8 @@
       position: relative;
       width: 100%;
       height: 100%;
-      transform: rotate(0deg);
-      border-radius: 100px;
+      transform: rotate(45deg);
+      border-radius: 10px;
       background: #ff3b7a;
       overflow: hidden;
     }
@@ -171,7 +176,6 @@
     .heartBalloon::before{ top: -50%; left: 0; }
     .heartBalloon::after { left: -50%; top: 0; }
 
-    /* balloon gloss */
     .shine{
       position:absolute;
       top: 16px;
@@ -199,9 +203,7 @@
       to  { top: -160px; }
     }
 
-    /* ==========================
-       Page 2: Envelope + notes
-    ========================== */
+    /* Page 3: Envelope */
     .page2Wrap{
       display:flex;
       flex-direction:column;
@@ -217,9 +219,9 @@
 
     .envelopeStage{
       position: relative;
-      width: min(420px, 86vw);
-      height: 270px;
-      margin-top: 10px;
+      width: min(440px, 86vw);
+      height: 280px;
+      margin-top: 8px;
     }
 
     .envelope{
@@ -227,23 +229,21 @@
       inset: 40px 0 0 0;
       margin:auto;
       width: 100%;
-      height: 210px;
+      height: 220px;
       cursor: pointer;
       transform: translateZ(0);
     }
 
-    /* envelope body */
     .envBody{
       position:absolute;
       inset: 0;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.90);
       border-radius: 18px;
       box-shadow: 0 20px 60px rgba(0,0,0,0.18);
       border: 1px solid rgba(255,255,255,0.55);
       overflow:hidden;
     }
 
-    /* bottom flap shading */
     .envBottom{
       position:absolute;
       left: 0; right: 0; bottom: 0;
@@ -253,7 +253,6 @@
       opacity: 0.8;
     }
 
-    /* top flap */
     .envTop{
       position:absolute;
       left:0; right:0; top:0;
@@ -265,7 +264,6 @@
       filter: drop-shadow(0 10px 14px rgba(0,0,0,0.10));
     }
 
-    /* seal heart */
     .seal{
       position:absolute;
       left:50%;
@@ -284,11 +282,10 @@
       transition: transform 600ms ease, opacity 300ms ease;
     }
 
-    /* Notes */
     .noteCard{
       position:absolute;
       left: 50%;
-      width: min(360px, 78vw);
+      width: min(380px, 80vw);
       transform: translateX(-50%);
       background: rgba(255,255,255,0.92);
       border: 1px solid rgba(255,255,255,0.55);
@@ -311,11 +308,9 @@
       line-height: 1.55;
     }
 
-    /* closed positions (inside envelope) */
-    #note1{ top: 120px; }
-    #note2{ top: 140px; }
+    #note1{ top: 122px; }
+    #note2{ top: 145px; }
 
-    /* open animation */
     .opened .envTop{ transform: rotateX(165deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05)); }
     .opened .seal{ transform: translate(-50%,-50%) scale(0.92); opacity: 0.92; }
 
@@ -338,6 +333,13 @@
       60%  { opacity:1; transform: translateX(-50%) translateY(-24px) scale(1.02); }
       100% { opacity:1; transform: translateX(-50%) translateY(-14px) scale(1.00); }
     }
+
+    /* small helper text */
+    .subtle{
+      font-size: 14px;
+      opacity: 0.72;
+      margin-top: -6px;
+    }
   </style>
 </head>
 
@@ -346,21 +348,36 @@
   <div class="balloon-layer" id="balloonLayer" aria-hidden="true"></div>
   <canvas id="fx"></canvas>
 
-  <!-- Page 1 -->
-  <div class="page" id="page1">
+  <!-- Music -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="love.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Page 0: Start -->
+  <div class="page" id="page0">
+    <h1>Hi Piggy</h1>
+    <p>Press start when you’re ready.</p>
+    <div class="btn-row" style="min-height:auto;">
+      <button class="primary" id="startBtn">Start</button>
+    </div>
+    <div class="subtle">This will start the music.</div>
+  </div>
+
+  <!-- Page 1: Valentine question -->
+  <div class="page hidden" id="page1">
     <h1>Will you be my Valentine, Piggy?</h1>
-    <p>Be honest… you can’t say no anyway 😌</p>
+    <p>Be honest… you can’t say no anyway.</p>
 
     <div class="btn-row">
-      <button id="yesBtn">YES</button>
-      <button id="noBtn">NO</button>
+      <button class="primary" id="yesBtn">YES</button>
+      <button class="dark" id="noBtn">NO</button>
     </div>
   </div>
 
-  <!-- Page 2 -->
+  <!-- Page 2: Envelope -->
   <div class="page hidden" id="page2">
     <div class="page2Wrap">
-      <h1 style="margin-bottom:6px;">For you, Piggy 💌</h1>
+      <h1 style="margin-bottom:6px;">For you, Piggy</h1>
       <div class="hint">Tap the envelope</div>
 
       <div class="envelopeStage">
@@ -374,14 +391,14 @@
 
           <div class="noteCard" id="note1">
             <h3>Now it’s official.</h3>
-            <p>You’re my Valentine 💖</p>
+            <p>You’re my Valentine.</p>
           </div>
 
           <div class="noteCard" id="note2">
             <h3>My favourite things about you</h3>
             <p>
               I love your smile, your eyes, your love for me, your care, your respect,
-              the way u hold my hand, your hugs, your jokes, your kisses and just you.
+              the way u hold my hand, your hugs, your jokes, your kisses and Just you.
               <br><br>
               Piggy, you make my days lighter and my heart calmer. Thank you for being you.
               I’m grateful for you — always.
@@ -394,13 +411,58 @@
 
   <script>
     /* ==========================
-       HEART BALLOONS (same colours)
+       Helpers
+    ========================== */
+    function rand(min,max){ return Math.random()*(max-min)+min; }
+
+    /* ==========================
+       Music: starts on Start button (reliable)
+    ========================== */
+    const bgMusic = document.getElementById("bgMusic");
+    let musicStarted = false;
+
+    function startMusic(){
+      if(musicStarted) return;
+      musicStarted = true;
+
+      bgMusic.volume = 0;
+      bgMusic.play().catch(()=>{});
+
+      // fade in to a soft volume
+      let v = 0;
+      const target = 0.35;
+      const fade = setInterval(() => {
+        v += 0.02;
+        bgMusic.volume = Math.min(v, target);
+        if(v >= target) clearInterval(fade);
+      }, 120);
+    }
+
+    /* ==========================
+       Page switching
+    ========================== */
+    const page0 = document.getElementById("page0");
+    const page1 = document.getElementById("page1");
+    const page2 = document.getElementById("page2");
+
+    function showPage(el){
+      page0.classList.add("hidden");
+      page1.classList.add("hidden");
+      page2.classList.add("hidden");
+      el.classList.remove("hidden");
+    }
+
+    document.getElementById("startBtn").addEventListener("click", () => {
+      startMusic();
+      showPage(page1);
+    });
+
+    /* ==========================
+       Heart balloons (only on page1)
     ========================== */
     const balloonLayer = document.getElementById("balloonLayer");
     const balloons = [];
     const BALLOON_COUNT = 16;
-
-    function rand(min,max){ return Math.random()*(max-min)+min; }
 
     const balloonColors = [
       "rgba(255, 59, 122, 0.92)",
@@ -455,7 +517,7 @@
     document.addEventListener("mousemove", (e)=>{ mouseX=e.clientX; mouseY=e.clientY; });
 
     function updateBalloons(){
-      const page1Visible = !document.getElementById("page1").classList.contains("hidden");
+      const page1Visible = !page1.classList.contains("hidden");
       balloonLayer.style.display = page1Visible ? "block" : "none";
 
       if(page1Visible){
@@ -470,7 +532,7 @@
 
           const range = 140;
           if(dist < range){
-            const push = (1 - dist/range) * 16 * b.strength; // subtle
+            const push = (1 - dist/range) * 16 * b.strength; // subtle movement
             const nx = dx / (dist || 1);
             const ny = dy / (dist || 1);
             b.targetX = nx * push;
@@ -492,12 +554,10 @@
     updateBalloons();
 
     /* ==========================
-       NO BUTTON RUNS AWAY
+       NO button runs away (page1 only)
     ========================== */
     const noBtn = document.getElementById("noBtn");
     const yesBtn = document.getElementById("yesBtn");
-    const page1 = document.getElementById("page1");
-    const page2 = document.getElementById("page2");
 
     function moveNo(){
       const rect = page1.getBoundingClientRect();
@@ -516,24 +576,29 @@
       noBtn.style.top = `${y}px`;
       noBtn.style.transform = "translateX(0)";
     }
+
     function nearCursorToNo(x,y){
       const r = noBtn.getBoundingClientRect();
       const cx = r.left + r.width/2;
       const cy = r.top + r.height/2;
       return Math.hypot(cx-x, cy-y) < 90;
     }
+
     document.addEventListener("mousemove", (e)=>{
       if(page1.classList.contains("hidden")) return;
       if(nearCursorToNo(e.clientX, e.clientY)) moveNo();
     });
+
     noBtn.addEventListener("click", (e)=>{
       e.preventDefault();
       moveNo();
     });
 
     /* ==========================
-       PARTICLES (ONE COLOUR, VISIBLE)
-       Everywhere -> gather dense filled heart -> scatter -> float on Page 2
+       Particles (ONE COLOUR) + filled heart formation
+       - ambient everywhere on all pages
+       - on YES: hide pages and gather into dense filled heart
+       - then go to page2 and scatter back to ambient
     ========================== */
     const canvas = document.getElementById("fx");
     const ctx = canvas.getContext("2d");
@@ -550,9 +615,7 @@
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
 
-    // single colour sparkle (pink glow with white-hot core)
     function drawSpark(x,y,r,alpha){
-      // stronger contrast glow
       ctx.beginPath();
       ctx.arc(x,y,r*3.6,0,Math.PI*2);
       ctx.fillStyle = `rgba(255, 47, 119, ${alpha*0.16})`;
@@ -569,7 +632,6 @@
       ctx.fill();
     }
 
-    // darken just the canvas slightly (so particles pop) without changing body bg
     function drawCanvasContrast(){
       const g = ctx.createRadialGradient(W/2, H/2, Math.min(W,H)*0.10, W/2, H/2, Math.min(W,H)*0.85);
       g.addColorStop(0, "rgba(0,0,0,0.06)");
@@ -578,27 +640,20 @@
       ctx.fillRect(0,0,W,H);
     }
 
-    // Heart curve for sampling
     function heartPoint(t){
       const x = 16 * Math.pow(Math.sin(t), 3);
       const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
       return { x, y };
     }
 
-    // Filled heart targets: dense everywhere, extra dense in centre
     function buildFilledHeartTargets(count, cx, cy, scale){
       const targets = [];
-
-      // We'll generate random points by picking an angle t, then picking a radial factor
-      // that is heavily biased toward centre (dense) but still fills the whole heart.
       for(let i=0;i<count;i++){
         const t = Math.random() * Math.PI * 2;
         const p = heartPoint(t);
 
-        // Bias: more density in centre (pow makes lots of small radii)
+        // Strong centre density
         const k = Math.pow(Math.random(), 2.8);
-
-        // Expand inner portion a bit so it fills nicely
         const factor = 0.08 + 0.92 * k;
 
         targets.push({
@@ -606,11 +661,10 @@
           y: cy - p.y * scale * factor
         });
       }
-
       return targets;
     }
 
-    const PARTICLE_COUNT = 800; // denser heart
+    const PARTICLE_COUNT = 1700; // dense filled heart
     let particles = [];
     let mode = "ambient"; // ambient | gather | hold | scatter
     let modeStart = performance.now();
@@ -640,8 +694,6 @@
 
       const cx = W/2;
       const cy = H/2;
-
-      // bigger heart
       const scale = Math.min(W, H) * 0.030;
 
       targets = buildFilledHeartTargets(PARTICLE_COUNT, cx, cy, scale);
@@ -654,8 +706,7 @@
     }
 
     function toPage2Scatter(){
-      page1.classList.add("hidden");
-      page2.classList.remove("hidden");
+      showPage(page2);
       document.body.classList.remove("heartMode");
 
       const cx = W/2, cy = H/2;
@@ -684,14 +735,12 @@
           p.x += p.vx;
           p.y += p.vy;
 
-          // gentle wander
           p.vx += (Math.random()-0.5)*0.014;
           p.vy += (Math.random()-0.5)*0.014;
 
           p.vx = Math.max(-0.38, Math.min(0.38, p.vx));
           p.vy = Math.max(-0.38, Math.min(0.38, p.vy));
 
-          // wrap
           if(p.x < -10) p.x = W+10;
           if(p.x > W+10) p.x = -10;
           if(p.y < -10) p.y = H+10;
@@ -702,7 +751,6 @@
       }
 
       if(mode === "gather"){
-        // faster early pull + tighter settle later
         const pull = elapsed < 1000 ? 0.080 : 0.060;
 
         for(const p of particles){
@@ -710,16 +758,13 @@
           p.y += (p.ty - p.y) * pull;
           p.vx *= 0.86;
           p.vy *= 0.86;
-
           drawSpark(p.x,p.y,p.r,1.0);
         }
 
-        // hold after it forms
         if(elapsed > 2400) setMode("hold");
       }
 
       if(mode === "hold"){
-        // keep heart stable + bright
         for(const p of particles){
           drawSpark(p.x,p.y,p.r,1.0);
         }
@@ -735,7 +780,6 @@
           p.vy *= 0.965;
 
           if(elapsed > 950){
-            // settle into ambient drift
             p.vx += ((Math.random()-0.5)*0.20 - p.vx) * 0.03;
             p.vy += ((Math.random()-0.5)*0.20 - p.vy) * 0.03;
           }
@@ -755,16 +799,14 @@
     }
     requestAnimationFrame(animate);
 
-    /* ==========================
-       YES CLICK
-    ========================== */
+    /* YES click */
     yesBtn.addEventListener("click", () => {
+      // ensure music is running (in case)
+      startMusic();
       startGather();
     });
 
-    /* ==========================
-       Envelope interaction
-    ========================== */
+    /* Envelope interaction */
     const envelope = document.getElementById("envelope");
     envelope.addEventListener("click", () => {
       envelope.classList.toggle("opened");
